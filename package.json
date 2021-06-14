@@ -1,0 +1,31 @@
+{
+  "name": "curl-mock",
+  "version": "0.0.1",
+  "description": "HTTP mock server built from curl format documents",
+  "main": "bin/main.js",
+  "bin": {
+    "curl-mock": "./bin/main.js"
+  },
+  "scripts": {
+    "start": "node bin/main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yammerjp/curl-mock.git"
+  },
+  "keywords": [
+    "http",
+    "curl",
+    "mock",
+    "server",
+    "document",
+    "markdown"
+  ],
+  "author": "yammerjp",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yammerjp/curl-mock/issues"
+  },
+  "homepage": "https://github.com/yammerjp/curl-mock#readme"
+}
