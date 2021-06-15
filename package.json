@@ -7,7 +7,7 @@
     "curl-mock": "./bin/curl-mock.js"
   },
   "scripts": {
-    "start": "node bin/main.js",
+    "start": "node bin/curl-mock.js",
     "build": "webpack"
   },
   "repository": {

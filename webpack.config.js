@@ -10,6 +10,7 @@ module.exports = {
       }
     ]
   },
+  mode: 'development',
   resolve: {
     extensions: [ '.tsx', '.ts', '.js' ]
   }
