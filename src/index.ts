@@ -1,11 +1,16 @@
-#!/usr/bin/env node
-
-const http = require('http');
+import http, { IncomingMessage, OutgoingHttpHeaders, ServerResponse } from 'http'
 
 const inputRequest = 'curl http://localhost:3000'
 const inputResponse = 'hello, world!'
 
-function requestParser(curlCmdStr) {
+type Request = {
+    error?: string
+    port?: string
+    path?: string
+}
+
+
+function requestParser(curlCmdStr: string): Request {
   const tokens = curlCmdStr.split(' ')
   if (tokens.length === 0 || tokens[0] !== 'curl') {
     return { error: 'request is invalid format (need "curl" on head)' }
@@ -17,16 +22,16 @@ function requestParser(curlCmdStr) {
   const port = url.split(':')[2] || '80'
   const pathParts = url.split('/').slice(3)
   let path
-  if (pathParts === undefined || pathParts === '' || pathParts.length === 0) {
+  if (pathParts === undefined || pathParts.length === 0) {
     path = '/'
   } else {
-    path = '/' + pathPaths.join('/')
+    path = '/' + pathParts.join('/')
   }
   return { port, path }
 }
 
-function createServer(path, response) {
-    return http.createServer((req, res) => {
+function createServer(path: string, response: { status: number, header: OutgoingHttpHeaders, body: string, error?: string}) {
+    return http.createServer((req: IncomingMessage, res: ServerResponse) => {
       if (req.url !== path) {
         res.writeHead(404)
         res.end('Not found', 'utf-8')
@@ -41,7 +46,10 @@ function createServer(path, response) {
 const request = requestParser(inputRequest);
 
 if (request.error) {
-  console.error(reqeust.error)
+  console.error(request.error)
+  process.exit(1)
+} else if (!request.path) {
+  console.error('request.path is undefined...')
   process.exit(1)
 }
 
