@@ -10,11 +10,6 @@ type Node = {
     children: Node[]
 }
 
-type Block = {
-    type: 'host' | 'request' | 'response'
-    value: string
-}
-
 export default async function readFile(path: string): Promise<Block[]> {
     const fileString = await fs.readFile(path)
     const tree = parse(fileString)

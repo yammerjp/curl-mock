@@ -1,15 +1,17 @@
 import mockServer from './mockServer'
 import readFile from './readFile'
+import createEndpointFromBlocks from './createEndpoint'
 
-readFile('example/helloworld.md').then(console.log)
+async function main() {
+  const blocks = await readFile('example/helloworld.md')
 
-const inputRequest = 'curl http://localhost:3000'
-const inputResponse = 'hello, world!'
+  const endpoints = createEndpointFromBlocks(blocks)
 
-const { error } = mockServer.addFromString(inputRequest, inputResponse)
-if (error) {
-  console.error(error)
-  process.exit(1)
+  mockServer.endpoints = endpoints
+
+  mockServer.start()
+  //  const inputRequest = 'curl http://localhost:3000'
+  //  const inputResponse = 'hello, world!'
 }
 
-mockServer.start()
+main()
