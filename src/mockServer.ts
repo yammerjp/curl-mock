@@ -3,10 +3,6 @@ import http, { IncomingMessage, ServerResponse } from 'http'
 class MockServer {
     endpoints: Endpoint[] = []
 
-    add(endpoint: Endpoint) {
-        this.endpoints.push(endpoint)
-    }
-
     private ports() {
         const portsArray = this.endpoints.map(e => e.request.port).filter(p => typeof p === 'string')  as string[]
         return Array.from(new Set(portsArray))

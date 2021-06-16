@@ -50,6 +50,8 @@ export default function createEndpointFromBlocks(blocks: Block[]): Endpoint[] {
             if (endpoint) { endpoints.push(endpoint) } else {
                 throw new Error('creating endpoint is failed')
             }
+            requestString = undefined
+            responseString = undefined
         }
     })
     return endpoints

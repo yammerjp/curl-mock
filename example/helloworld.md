@@ -13,3 +13,22 @@ curl http://localhost:3000
 ```curlmock-response
 hello, world!
 ```
+
+```curlmock-request
+curl http://localhost:3000/hello2
+```
+
+```curlmock-response
+hello, world2!
+```
+
+```curlmock-request
+curl http://localhost:3000/json_endpoint
+```
+
+```curlmock-response
+{
+    "message": "hello",
+    "path": "/json_endpoint"
+}
+```

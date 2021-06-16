@@ -10,8 +10,6 @@ async function main() {
   mockServer.endpoints = endpoints
 
   mockServer.start()
-  //  const inputRequest = 'curl http://localhost:3000'
-  //  const inputResponse = 'hello, world!'
 }
 
 main()
