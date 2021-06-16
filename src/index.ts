@@ -23,6 +23,21 @@ type Endpoint = {
 class MockServer {
     endpoints: Endpoint[] = []
 
+    addFromString(requestStr: string, responseStr: string): { error?: string}  {
+      const request = requestParser(requestStr)
+      const response = {
+        status: 200,
+        header: { 'Content-Type': 'text/plain' },
+        body: responseStr
+      }
+      const { error } = request
+      if (error) {
+        return { error }
+      }
+      this.add({ request, response})
+      return {}
+    }
+
     add(endpoint: Endpoint) {
         this.endpoints.push(endpoint)
     }
@@ -37,7 +52,7 @@ class MockServer {
         ports.forEach((port) => {
             const endpoints = this.endpoints.filter(e => e.request.port === port)
             createServer(endpoints).listen(port)
-            console.log(`A server of curl-mock is running at http://localhost:${request.port}/\nPlease execute such as following the curl command\ncurl http://localhost:${request.port}`)
+            console.log(`A server of curl-mock is running at http://localhost:${port}/\nPlease execute such as following the curl command\ncurl http://localhost:${port}`)
         })
     }
 }
@@ -54,7 +69,7 @@ function requestParser(curlCmdStr: string): Request {
   }
   const port = url.split(':')[2] || '80'
   const pathParts = url.split('/').slice(3)
-  let path
+  let path = ''
   if (pathParts === undefined || pathParts.length === 0) {
     path = '/'
   } else {
@@ -76,23 +91,11 @@ function createServer(endpoints: Endpoint[]) {
     })
 }
 
-const request = requestParser(inputRequest);
-
-if (request.error) {
-  console.error(request.error)
-  process.exit(1)
-} else if (!request.path) {
-  console.error('request.path is undefined...')
-  process.exit(1)
-}
-
-const response = {
-  status: 200,
-  header: { 'Content-Type': 'text/plain' },
-  body: inputResponse,
-}
-
 const mockServer = new MockServer()
-mockServer.add({request, response})
+const { error } = mockServer.addFromString(inputRequest, inputResponse)
+if (error) {
+  console.error(error)
+  process.exit(1)
+}
+
 mockServer.start()
-// createServer([{request, response}]).listen('3000')
