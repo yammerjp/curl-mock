@@ -1,4 +1,4 @@
-import requestParser from './requestParser'
+import { requestParser } from './requestParser'
 import responseParser from './responseParser'
 
 export default function createEndpointFromBlocks(blocks: Block[]): Endpoint[] {
