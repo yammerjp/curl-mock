@@ -31,7 +31,7 @@ export default function createEndpointFromBlocks(blocks: Block[]): Endpoint[] {
                 console.error({ error: 'request is not defined' })
                 continue
             }
-            const response = responseParser(b.value, 'curlmock-response')
+            const response = responseParser(b.value, b.type)
             if (!response) {
                 console.error({ error: 'failed to parse response string', value: b.value })
                 continue
