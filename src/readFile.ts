@@ -14,7 +14,7 @@ export default async function readFile(path: string): Promise<Block[]> {
     const fileString = await fs.readFile(path)
     const tree = parse(fileString)
     const markdownBlocks = (tree as Node).children
-    const BlocksIncludeUndefined = markdownBlocks.map((mdb: Node): Block|undefined => {
+    const BlocksIncludeUndefined: Array<Block|undefined> = markdownBlocks.map((mdb: Node): Block|undefined => {
         if (mdb.type !== 'code') {
             return undefined
         }

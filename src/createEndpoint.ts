@@ -1,73 +1,49 @@
-function requestParser(curlCmdStr: string): Request {
-  const tokens = curlCmdStr.split(' ')
-  if (tokens.length === 0 || tokens[0] !== 'curl') {
-    return { error: 'request is invalid format (need "curl" on head)' }
-  }
-  const url = tokens.find(t => /^http:\/\/localhost(:\d+)?/.test(t))
-  if (url === undefined) {
-    return { error: 'request is invalid format (need url' }
-  }
-  const pathParts = url.split('/').slice(3)
-  let path = ''
-  if (pathParts === undefined || pathParts.length === 0) {
-    path = '/'
-  } else {
-    path = '/' + pathParts.join('/')
-  }
-  return { path }
-}
+import requestParser from './requestParser'
+import responseParser from './responseParser'
 
 export default function createEndpointFromBlocks(blocks: Block[]): Endpoint[] {
     let port = '3000'
-    let responseHeaders =  { 'Content-Type': 'text/plain' }
-    let responseStatus = 200
-
-    let requestString: string|undefined
-    let responseString: string|undefined
-
+    let request: Request|undefined
     const endpoints: Endpoint[] = []
 
-    blocks.forEach(b => {
+    for (const b of blocks) {
         if (b.type === 'host') {
             const hostAndPort = b.value.split('/')[2]
             if (hostAndPort.includes(':')) {
                 port = hostAndPort.split(':')[1]
             }
-            return
+            continue
         }
-        if (b.type === 'request') {
-            if (requestString) {
-                throw new Error('request is duplicated')
-            }
-            requestString = b.value
-        }
-        if (b.type === 'response') {
-            if (!requestString) {
-                throw new Error('request is not defined')
-            }
-            responseString = b.value
-            const endpoint = createEndpoint(requestString, responseString, port, responseStatus, responseHeaders)
-            if (endpoint) { endpoints.push(endpoint) } else {
-                throw new Error('creating endpoint is failed')
-            }
-            requestString = undefined
-            responseString = undefined
-        }
-    })
-    return endpoints
-}
 
-function createEndpoint(requestStr: string, responseStr: string, port: string, responseStatus: number, responseHeaders: { [key: string]: string}): Endpoint | undefined {
-    const { path, error } = requestParser(requestStr)
-    if (error) {
-        return undefined
+        if (b.type === 'request') {
+            if (request) {
+                console.error({ error: 'request block is duplicated' })
+            }
+            request = requestParser(b.value, port)
+            if (!request) {
+                console.error({ error: 'failed to parse request string', value: b.value })
+            }
+            continue
+        }
+
+        if (b.type === 'response') {
+            if (!request) {
+                console.error({ error: 'request is not defined' })
+                continue
+            }
+            const response = responseParser(b.value, 'curlmock-response')
+            if (!response) {
+                console.error({ error: 'failed to parse response string', value: b.value })
+                continue
+            }
+            endpoints.push({
+                request: Object.assign(request),
+                response,
+            })
+            request = undefined
+            continue
+        }
+        console.error({ error: 'Unknown block type', value: b.type })
     }
-    
-    const request = { path, port }
-    const response = {
-        status: responseStatus,
-        header: responseHeaders,
-        body: responseStr
-    }
-    return { request, response }
+    return endpoints
 }

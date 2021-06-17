@@ -1,7 +1,6 @@
 type Request = {
-    error?: string
-    port?: string
-    path?: string
+    port: string
+    path: string
 }
 
 type Response = {
@@ -16,7 +15,8 @@ type Endpoint = {
 }
 
 type Block = {
-    type: 'host' | 'request' | 'response'
+    type: 'host' | 'request' | ResponseType
     value: string
 }
 
+type ResponseType = 'response'
