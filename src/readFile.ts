@@ -19,19 +19,19 @@ export default async function readFile(path: string): Promise<Block[]> {
             return undefined
         }
         const { value } = mdb
-        if (mdb.lang === 'curlmock-host' && value !== undefined) {
+        if (mdb.lang === 'curldoc-host' && value !== undefined) {
             return {
                 type: 'host',
                 value,
            }
         }
-        if (mdb.lang === 'curlmock-request' && value !== undefined) {
+        if (mdb.lang === 'curldoc-request' && value !== undefined) {
             return {
                 type: 'request',
                 value,
            }
         }
-        if (mdb.lang === 'curlmock-response' && value !== undefined) {
+        if (mdb.lang === 'curldoc-response' && value !== undefined) {
             return {
                 type: 'response',
                 value,

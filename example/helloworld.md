@@ -2,42 +2,42 @@
 
 you can create a mock server from this markdown file.
 
-```curlmock-host
+```curldoc-host
 http://localhost:3000
 ```
 
-```curlmock-request
+```curldoc-request
 curl http://localhost:3000
 ```
 
-```curlmock-response
+```curldoc-response
 hello, world!
 ```
 
-```curlmock-request
+```curldoc-request
 curl http://localhost:3000/hello2
 ```
 
-```curlmock-response
+```curldoc-response
 hello, world2!
 ```
 
-```curlmock-request
+```curldoc-request
 curl http://localhost:3000/json_endpoint
 ```
 
-```curlmock-response
+```curldoc-response
 {
     "message": "hello",
     "path": "/json_endpoint"
 }
 ```
 
-```curlmock-request
+```curldoc-request
 curl http://localhost:3000/hello3 --header 'User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0'
 ```
 
-```curlmock-response
+```curldoc-response
 hello, world3!
 ```
 
