@@ -2,7 +2,7 @@
 
 curldoc is a simple executable Web API document format using the curl command.
 
-The CLI Application of curldoc behave a HTTP mock server from Web API document.
+The CLI Application of curldoc behave a HTTP mock server from a markdown file of Web API document.
 
 
 <pre>
