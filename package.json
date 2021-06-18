@@ -1,19 +1,19 @@
 {
-  "name": "curl-mock",
+  "name": "curldoc",
   "version": "0.0.1",
-  "description": "HTTP mock server built from curl format documents",
+  "description": "Executable Web API document format using the curl command",
   "main": "bin/main.js",
   "bin": {
-    "curl-mock": "./bin/curl-mock.js"
+    "curl": "./bin/curldoc.js"
   },
   "scripts": {
-    "start": "node bin/curl-mock.js",
+    "start": "node bin/curldoc.js",
     "build": "webpack",
     "test": "jest"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yammerjp/curl-mock.git"
+    "url": "git+https://github.com/yammerjp/curldoc.git"
   },
   "keywords": [
     "http",
