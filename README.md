@@ -4,9 +4,7 @@ curldoc is a simple executable Web API document format using the curl command.
 
 The CLI Application of curldoc behave a HTTP mock server from Web API document.
 
-Document format of curldoc is here.
-
-<code>
+```
 
 A document is markdown file.
 You can write anything outside of ``` ... ```
@@ -22,5 +20,4 @@ curl http://localhost:3000/hello3 --header 'User-Agent: Mozilla/5.0 (Windows NT 
 }
 \```
 
-
-</code>
+```
