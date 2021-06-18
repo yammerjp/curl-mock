@@ -1,23 +1,53 @@
 function requestParser(curlCmdStr: string, port: string): Request|undefined {
-    // TODO: user tokenizer(str)
-  const tokens = curlCmdStr.split(' ')
+  let path: string|undefined
+  const header: {[key:string]: string} = {}
+  const tokens = tokenizer(curlCmdStr)
   if (tokens.length === 0 || tokens[0] !== 'curl') {
     console.error({ error: 'request is invalid format (need "curl" on head)' })
     return
   }
-  const url = tokens.find(t => /^http:\/\/localhost(:\d+)?/.test(t))
-  if (!url) {
-      console.error({ error: 'request is invalid format (need url' })
-    return
+  for(let i = 0; i < tokens.length; i++) {
+    if (/^http(s)?:\/\//.test(tokens[i])) {
+      if (path) {
+        console.error({error: 'specifying url is duplicated'})
+        continue
+      }
+      const urlParts = tokens[i].split('/')
+      if (urlParts.length < 4) {
+        path = '/'
+        continue
+      }
+      path = '/' + urlParts.slice(3).join('/')
+      continue
+    }
+
+    if (tokens[i] === '--header' || tokens[i] === '-H') {
+      i++
+      if (i===tokens.length) {
+        console.error({error: 'Failed to parse request. last token is HTTP header option but it is not specified anything'})
+        break
+      }
+      if (!/^[a-zA-Z0-9\-]+:( )*/.test(tokens[i])) {
+        console.error({error: 'Failed to parse request. HTTP header format is invalid.'})
+        continue
+      }
+      const devidedByColon = tokens[i].split(':')
+      const key = devidedByColon[0]
+      const value = devidedByColon.slice(1).join(':').trim()
+
+      if (header[key]) {
+        console.error('Failed to parserequest. Headers conflict.')
+        continue
+      }
+      header[key] = value
+    }
   }
-  const pathParts = url.split('/').slice(3)
-  let path = ''
-  if (pathParts === undefined || pathParts.length === 0) {
+
+  if (!path) {
+    console.error({error: 'url is not specified'})
     path = '/'
-  } else {
-    path = '/' + pathParts.join('/')
   }
-  return { path, port }
+  return { path, port, header}
 }
 
 function tokenizer(str: string): string[] {

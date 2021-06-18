@@ -20,13 +20,30 @@ class MockServer {
 
 
 function createServer(endpoints: Endpoint[]) {
-    return http.createServer((req: IncomingMessage, res: ServerResponse) => {
+    return http.createServer(async (req: IncomingMessage, res: ServerResponse) => {
+        const body = await new Promise((resolve) => {
+            let body = ''
+            req
+            .on('data', chunk => body += chunk)
+            .on('reqdable', () => req.read())
+            .on('end', () => resolve(body))
+        })
+
+        const { url, headers } = req
+
+        console.log(`request: ${JSON.stringify({url, headers, body})}`)
         const endpoint = endpoints.find(e => e.request.path === req.url)
         if (!endpoint) {
             res.writeHead(404)
             res.end('Not found', 'utf-8')
             return
         }
+        if (Object.keys(endpoint.request.header).some( key => req.headers[key.toLowerCase()] !== endpoint.request.header[key])) {
+            res.writeHead(400)
+            res.end('Bad Request', 'utf-8')
+            return
+        }
+
         res.writeHead(endpoint.response.status, endpoint.response.header)
         res.end(endpoint.response.body, 'utf-8')
     })

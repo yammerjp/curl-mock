@@ -1,6 +1,7 @@
 type Request = {
     port: string
     path: string
+    header: { [key:string]: string }
 }
 
 type Response = {
