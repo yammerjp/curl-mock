@@ -64,7 +64,10 @@ function requestParser(curlCmdStr: string): Request | undefined {
         })
         break
       }
-      body = tokens[i]
+      if (body) {
+        console.error('Failed to parserequest. HTTP request body conflict.')
+      }
+      body = compactIfJson(tokens[i])
     }
   }
 
@@ -162,4 +165,12 @@ function deleteTheCharactor(word: string, idx: number) {
   return head + tail
 }
 
-export { requestParser, tokenizer, headerParser }
+function compactIfJson(body: string):string {
+  try {
+    return JSON.stringify(JSON.parse(body))
+  } catch {
+    return body
+  }
+}
+
+export { requestParser, tokenizer, headerParser, compactIfJson }

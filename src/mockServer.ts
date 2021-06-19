@@ -1,4 +1,5 @@
 import http, { IncomingMessage, ServerResponse } from 'http'
+import { compactIfJson } from './requestParser'
 
 function mockServer(endpoints: Endpoint[], port: number): void {
   const processor = createRequestProcessor(endpoints)
@@ -46,7 +47,9 @@ function createRequestProcessor(endpoints: Endpoint[]): (req: IncomingMessage, r
       return
     }
 
-    const endpointsBodyMatched = endpointsHeaderMathed.filter((e) => e.request.body === body)
+    const compactBody = body !== undefined? compactIfJson(body as string) : undefined
+
+    const endpointsBodyMatched = endpointsHeaderMathed.filter((e) => e.request.body === compactBody)
     if (endpointsBodyMatched.length === 0) {
         res.writeHead(400)
         res.end('Bad Request', 'utf-8')
