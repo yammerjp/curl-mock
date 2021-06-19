@@ -2,6 +2,7 @@ function requestParser(curlCmdStr: string): Request | undefined {
   let path: string | undefined
   const header: { [key: string]: string } = {}
   let method: HTTPRequestMethods | undefined
+  let body: string|undefined
 
   const tokens = tokenizer(curlCmdStr)
   if (tokens.length === 0 || tokens[0] !== 'curl') {
@@ -53,6 +54,18 @@ function requestParser(curlCmdStr: string): Request | undefined {
       }
       header[key] = value
     }
+
+    // body
+    if (tokens[i] === '--data-raw') {
+      i += 1
+      if (i === tokens.length) {
+        console.error({
+          error: 'Failed to parse request. last token is HTTP request body option but it is not specified anything'
+        })
+        break
+      }
+      body = tokens[i]
+    }
   }
 
   if (!path) {
@@ -62,7 +75,7 @@ function requestParser(curlCmdStr: string): Request | undefined {
   if (!method) {
     method = 'GET'
   }
-  return { method, path, header }
+  return { method, path, header, body }
 }
 
 function urlParser(token: string): string {

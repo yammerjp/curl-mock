@@ -4,6 +4,7 @@ type Request = {
     method: HTTPRequestMethods
     path: string
     header: { [key:string]: string }
+    body?: string
 }
 
 type Response = {

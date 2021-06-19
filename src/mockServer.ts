@@ -20,9 +20,9 @@ function createRequestProcessor(endpoints: Endpoint[]): (req: IncomingMessage, r
         .on('end', () => resolve(b))
     })
 
-    const { url, headers, method } = req
+    const {url, headers, method} = req
 
-    console.log(`request: ${JSON.stringify({ url, headers, body, method })}`)
+    console.log(`request: ${JSON.stringify({ url, headers, body, method})}`)
     const endpointsPathMatched = endpoints.filter((e) => e.request.path === req.url)
     if (endpointsPathMatched.length === 0) {
       res.writeHead(404)
@@ -46,11 +46,18 @@ function createRequestProcessor(endpoints: Endpoint[]): (req: IncomingMessage, r
       return
     }
 
-    if (endpointsHeaderMathed.length > 1) {
+    const endpointsBodyMatched = endpointsHeaderMathed.filter((e) => e.request.body === body)
+    if (endpointsBodyMatched.length === 0) {
+        res.writeHead(400)
+        res.end('Bad Request', 'utf-8')
+        return
+    }
+
+    if (endpointsBodyMatched.length > 1) {
       console.error({ error: 'request matched multiple endpoints' })
     }
 
-    const [endpoint] = endpointsHeaderMathed
+    const [endpoint] = endpointsBodyMatched
     res.writeHead(endpoint.response.status, endpoint.response.header)
     res.end(endpoint.response.body, 'utf-8')
   }
