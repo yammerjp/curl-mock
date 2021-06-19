@@ -14,7 +14,14 @@ hello, world!
 curl http://localhost:3000/hello2
 ```
 
-```curldoc-response
+```curldoc-response-include
+HTTP/1.1 200 OK
+Content-Type: text/plain
+Date: Sat, 19 Jun 2021 05:25:14 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
 hello, world2!
 ```
 

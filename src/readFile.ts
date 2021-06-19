@@ -31,6 +31,13 @@ export default async function readFile(path: string): Promise<Block[]> {
         value
       }
     }
+    if (mdb.lang === 'curldoc-response-include' && value !== undefined) {
+      return {
+        type: 'response-include',
+        value
+      }
+    }
+
     return undefined
   })
   return BlocksIncludeUndefined.filter((b) => b) as Block[]

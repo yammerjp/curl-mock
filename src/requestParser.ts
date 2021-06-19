@@ -9,7 +9,6 @@ function requestParser(curlCmdStr: string): Request | undefined {
     return undefined
   }
   for (let i = 0; i < tokens.length; i += 1) {
-
     // path
     if (/^http(s)?:\/\//.test(tokens[i])) {
       if (path) {
@@ -150,4 +149,4 @@ function deleteTheCharactor(word: string, idx: number) {
   return head + tail
 }
 
-export { requestParser, tokenizer }
+export { requestParser, tokenizer, headerParser }

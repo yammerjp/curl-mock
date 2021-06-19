@@ -20,7 +20,7 @@ export default function createEndpointFromBlocks(blocks: Block[]): Endpoint[] {
       continue
     }
 
-    if (b.type === 'response') {
+    if (b.type === 'response' || b.type === 'response-include') {
       if (!request) {
         console.error({ error: 'request is not defined' })
         continue

@@ -22,4 +22,4 @@ type Block = {
     value: string
 }
 
-type ResponseType = 'response'
+type ResponseType = 'response' | 'response-include'
