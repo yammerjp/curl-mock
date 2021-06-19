@@ -11,19 +11,15 @@ function mockServer(endpoints: Endpoint[], port: number): void {
 
 function createRequestProcessor(endpoints: Endpoint[]): (req: IncomingMessage, res: ServerResponse) => Promise<void> {
   return async (req: IncomingMessage, res: ServerResponse) => {
-    const body = await new Promise((resolve) => {
+    const bodyRaw = await new Promise((resolve) => {
       let b = ''
-      req
-        .on('data', (chunk) => {
-          b += chunk
-        })
-        .on('reqdable', () => req.read())
-        .on('end', () => resolve(b))
+      req.on('data', (chunk) => {
+        b += String(chunk)
+      })
+      req.on('end', () => resolve(b))
     })
+    const body = bodyRaw ? compactIfJson(bodyRaw as string) : undefined
 
-    const {url, headers, method} = req
-
-    console.log(`request: ${JSON.stringify({ url, headers, body, method})}`)
     const endpointsPathMatched = endpoints.filter((e) => e.request.path === req.url)
     if (endpointsPathMatched.length === 0) {
       res.writeHead(404)
@@ -43,17 +39,15 @@ function createRequestProcessor(endpoints: Endpoint[]): (req: IncomingMessage, r
     )
     if (endpointsHeaderMathed.length === 0) {
       res.writeHead(400)
-      res.end('Bad Request', 'utf-8')
+      res.end('Bad Request (header)', 'utf-8')
       return
     }
 
-    const compactBody = body !== undefined? compactIfJson(body as string) : undefined
-
-    const endpointsBodyMatched = endpointsHeaderMathed.filter((e) => e.request.body === compactBody)
+    const endpointsBodyMatched = endpointsHeaderMathed.filter((e) => e.request.body === body)
     if (endpointsBodyMatched.length === 0) {
-        res.writeHead(400)
-        res.end('Bad Request', 'utf-8')
-        return
+      res.writeHead(400)
+      res.end('Bad Request (body)', 'utf-8')
+      return
     }
 
     if (endpointsBodyMatched.length > 1) {

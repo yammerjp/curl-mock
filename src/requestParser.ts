@@ -2,7 +2,7 @@ function requestParser(curlCmdStr: string): Request | undefined {
   let path: string | undefined
   const header: { [key: string]: string } = {}
   let method: HTTPRequestMethods | undefined
-  let body: string|undefined
+  let body: string | undefined
 
   const tokens = tokenizer(curlCmdStr)
   if (tokens.length === 0 || tokens[0] !== 'curl') {
@@ -66,6 +66,7 @@ function requestParser(curlCmdStr: string): Request | undefined {
       }
       if (body) {
         console.error('Failed to parserequest. HTTP request body conflict.')
+        continue
       }
       body = compactIfJson(tokens[i])
     }
@@ -112,7 +113,7 @@ function tokenizer(argString: string): string[] {
 
   let str = `${argString} `
   for (let i = 0; i < str.length; i += 1) {
-    if (str[i] === ' ') {
+    if (str[i] === ' ' || str[i] === '\n' || str[i] === '\t') {
       if (!inner) {
         const token = str.slice(tokenBegin, i)
         if (token.length > 0) {
@@ -165,7 +166,7 @@ function deleteTheCharactor(word: string, idx: number) {
   return head + tail
 }
 
-function compactIfJson(body: string):string {
+function compactIfJson(body: string): string {
   try {
     return JSON.stringify(JSON.parse(body))
   } catch {
