@@ -1,4 +1,4 @@
-function requestParser(curlCmdStr: string, port: string): Request | undefined {
+function requestParser(curlCmdStr: string): Request | undefined {
   let path: string | undefined
   const header: { [key: string]: string } = {}
   let method: HTTPRequestMethods | undefined
@@ -63,7 +63,7 @@ function requestParser(curlCmdStr: string, port: string): Request | undefined {
   if (!method) {
     method = 'GET'
   }
-  return { method, path, port, header }
+  return { method, path, header }
 }
 
 function urlParser(token: string): string {

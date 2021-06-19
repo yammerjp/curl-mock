@@ -30,14 +30,12 @@ test('requestParser', () => {
 
   expect(
     requestParser(
-      "curl http://localhost:3000/hello2 --header 'User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0'",
-      '80'
+      "curl http://localhost:3000/hello2 --header 'User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0'"
     )
   ).toStrictEqual({
-    port: '80',
     path: '/hello2',
     header: {
       'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0'
-    }
+    },
   })
 })

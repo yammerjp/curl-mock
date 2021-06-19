@@ -19,12 +19,6 @@ export default async function readFile(path: string): Promise<Block[]> {
       return undefined
     }
     const { value } = mdb
-    if (mdb.lang === 'curldoc-host' && value !== undefined) {
-      return {
-        type: 'host',
-        value
-      }
-    }
     if (mdb.lang === 'curldoc-request' && value !== undefined) {
       return {
         type: 'request',

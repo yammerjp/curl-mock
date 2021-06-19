@@ -2,10 +2,6 @@
 
 you can create a mock server from this markdown file.
 
-```curldoc-host
-http://localhost:3000
-```
-
 ```curldoc-request
 curl http://localhost:3000
 ```

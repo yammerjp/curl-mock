@@ -2,24 +2,15 @@ import { requestParser } from './requestParser'
 import responseParser from './responseParser'
 
 export default function createEndpointFromBlocks(blocks: Block[]): Endpoint[] {
-  let port = '3000'
   let request: Request | undefined
   const endpoints: Endpoint[] = []
 
   for (const b of blocks) {
-    if (b.type === 'host') {
-      const hostAndPort = b.value.split('/')[2]
-      if (hostAndPort.includes(':')) {
-        ;[, port] = hostAndPort.split(':')
-      }
-      continue
-    }
-
     if (b.type === 'request') {
       if (request) {
         console.error({ error: 'request block is duplicated' })
       }
-      request = requestParser(b.value, port)
+      request = requestParser(b.value)
       if (!request) {
         console.error({
           error: 'failed to parse request string',
