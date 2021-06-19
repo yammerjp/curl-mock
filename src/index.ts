@@ -19,7 +19,7 @@ async function main() {
     documentPaths.push(args[i])
   }
   if (documentPaths.length === 0) {
-    console.error({error: 'Please specify any markdown files'})
+    console.error('Usage: curldoc <markdown file path> (--port <TCP port)')
     return
   }
 
