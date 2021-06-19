@@ -21,11 +21,9 @@ function responseIncludeHeadersParser(str: string): Response {
   let status = 200
   let i = 0
   for (; i < lines.length; i += 1) {
-    console.log(`line: ${lines[i]}`)
     // status code
     if (i === 0 && /^HTTP\/1\.1 [0-9][0-9][0-9] /.test(lines[i])) {
       const [, statusStr] = lines[i].split(' ')
-      console.log(`statusStr: ${statusStr}`)
       if (Number(statusStr) >= 100 && Number(statusStr) < 600) {
         status = Number(statusStr)
       } else {
