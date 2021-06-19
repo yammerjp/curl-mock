@@ -32,25 +32,35 @@ function createServer(endpoints: Endpoint[]) {
         .on('end', () => resolve(b))
     })
 
-    const { url, headers } = req
+    const { url, headers, method } = req
 
-    console.log(`request: ${JSON.stringify({ url, headers, body })}`)
-    const endpoint = endpoints.find((e) => e.request.path === req.url)
-    if (!endpoint) {
+    console.log(`request: ${JSON.stringify({ url, headers, body, method })}`)
+    const endpointsPathMatched =  endpoints.filter((e) => e.request.path === req.url)
+    if (endpointsPathMatched.length === 0) {
       res.writeHead(404)
       res.end('Not found', 'utf-8')
       return
     }
-    if (
-      Object.keys(endpoint.request.header).some(
-        (key) => req.headers[key.toLowerCase()] !== endpoint.request.header[key]
-      )
-    ) {
+
+    const endpointsMethodMatched = endpointsPathMatched.filter(e => e.request.method === req.method)
+    if (endpointsMethodMatched.length === 0) {
+        res.writeHead(405)
+        res.end('Method Not Allowed', 'utf-8')
+        return
+    }
+
+    const endpointsHeaderMathed = endpointsMethodMatched.filter(e => Object.keys(e.request.header).every(key => e.request.header[key] === req.headers[key.toLowerCase()]))
+    if (endpointsHeaderMathed.length === 0) {
       res.writeHead(400)
       res.end('Bad Request', 'utf-8')
       return
     }
 
+    if (endpointsHeaderMathed.length > 1) {
+        console.error({error: 'request matched multiple endpoints'})
+    }
+
+    const [endpoint] = endpointsHeaderMathed
     res.writeHead(endpoint.response.status, endpoint.response.header)
     res.end(endpoint.response.body, 'utf-8')
   })

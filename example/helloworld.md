@@ -23,6 +23,15 @@ hello, world2!
 ```
 
 ```curldoc-request
+curl http://localhost:3000/hello2 -X POST
+```
+
+```curldoc-response
+hello, world2! (POST request)
+```
+
+
+```curldoc-request
 curl http://localhost:3000/json_endpoint
 ```
 

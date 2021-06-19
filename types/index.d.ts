@@ -1,4 +1,7 @@
+type HTTPRequestMethods = 'POST' | 'GET' | 'PUT' | 'DELETE' // ...
+
 type Request = {
+    method: HTTPRequestMethods
     port: string
     path: string
     header: { [key:string]: string }

@@ -9,6 +9,7 @@
   "scripts": {
     "start": "node bin/curldoc.js",
     "build": "webpack",
+    "dev": "npm run build && npm run start",
     "test": "jest",
     "lint": "eslint --fix 'src/**/*.ts' && prettier --write 'src/**/*.ts'"
   },

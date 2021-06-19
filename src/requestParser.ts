@@ -1,12 +1,15 @@
 function requestParser(curlCmdStr: string, port: string): Request | undefined {
   let path: string | undefined
   const header: { [key: string]: string } = {}
+  let method: HTTPRequestMethods | undefined
+
   const tokens = tokenizer(curlCmdStr)
   if (tokens.length === 0 || tokens[0] !== 'curl') {
     console.error({ error: 'request is invalid format (need "curl" on head)' })
     return undefined
   }
   for (let i = 0; i < tokens.length; i += 1) {
+
     // path
     if (/^http(s)?:\/\//.test(tokens[i])) {
       if (path) {
@@ -15,6 +18,24 @@ function requestParser(curlCmdStr: string, port: string): Request | undefined {
       }
       path = urlParser(tokens[i])
       continue
+    }
+
+    // method
+    if (tokens[i] === '-X' || tokens[i] === '--request') {
+      i += 1
+      if (i === tokens.length) {
+        console.error({
+          error: 'Failed to parse request. last token is HTTP request method option but it is not specified anything'
+        })
+        break
+      }
+      if (method) {
+        console.error('Failed to parserequest. HTTP request methods conflict.')
+        continue
+      }
+      if (tokens[i] === 'GET' || tokens[i] === 'POST' || tokens[i] === 'PUT' || tokens[i] === 'DELETE') {
+        method = tokens[i] as HTTPRequestMethods
+      }
     }
 
     // header
@@ -39,7 +60,10 @@ function requestParser(curlCmdStr: string, port: string): Request | undefined {
     console.error({ error: 'url is not specified' })
     path = '/'
   }
-  return { path, port, header }
+  if (!method) {
+    method = 'GET'
+  }
+  return { method, path, port, header }
 }
 
 function urlParser(token: string): string {
