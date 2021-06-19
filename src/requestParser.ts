@@ -7,35 +7,25 @@ function requestParser(curlCmdStr: string, port: string): Request|undefined {
     return
   }
   for(let i = 0; i < tokens.length; i++) {
+    // path
     if (/^http(s)?:\/\//.test(tokens[i])) {
       if (path) {
         console.error({error: 'specifying url is duplicated'})
         continue
       }
-      const urlParts = tokens[i].split('/')
-      if (urlParts.length < 4) {
-        path = '/'
-        continue
-      }
-      path = '/' + urlParts.slice(3).join('/')
+      path = urlParser(tokens[i])
       continue
     }
 
+    // header
     if (tokens[i] === '--header' || tokens[i] === '-H') {
       i++
       if (i===tokens.length) {
         console.error({error: 'Failed to parse request. last token is HTTP header option but it is not specified anything'})
         break
       }
-      if (!/^[a-zA-Z0-9\-]+:( )*/.test(tokens[i])) {
-        console.error({error: 'Failed to parse request. HTTP header format is invalid.'})
-        continue
-      }
-      const devidedByColon = tokens[i].split(':')
-      const key = devidedByColon[0]
-      const value = devidedByColon.slice(1).join(':').trim()
-
-      if (header[key]) {
+      const {key, value} = headerParser(tokens[i])
+      if (!key || header[key]) {
         console.error('Failed to parserequest. Headers conflict.')
         continue
       }
@@ -47,7 +37,28 @@ function requestParser(curlCmdStr: string, port: string): Request|undefined {
     console.error({error: 'url is not specified'})
     path = '/'
   }
-  return { path, port, header}
+  return {path, port, header}
+}
+
+function urlParser(token: string):string {
+    const urlParts = token.split('/')
+    if (urlParts.length < 4) {
+      return '/'
+    }
+    return '/' + urlParts.slice(3).join('/')
+}
+
+function headerParser(token: string): {key:string|undefined, value:string} {
+  if (!/^[a-zA-Z0-9\-]+:( )*/.test(token)) {
+    console.error({
+      error: "Failed to parse request. HTTP header format is invalid.",
+    });
+    return { key: undefined, value: ''}
+  }
+  const devidedByColon = token.split(":");
+  const key = devidedByColon[0];
+  const value = devidedByColon.slice(1).join(":").trim();
+  return { key, value }
 }
 
 function tokenizer(str: string): string[] {
