@@ -13,9 +13,11 @@ export default function deepInclude(including: JsonValue, included: JsonValue): 
   if (Array.isArray(included)) {
     return included.every((_, idx) => deepInclude((including as JsonValueArray)[idx], included[idx]))
   }
-  return Object.keys(included as JsonValueObject).every(
+  const includedKeys = Object.keys(included as JsonValueObject)
+  const includingKeys = Object.keys(including as JsonValueObject)
+  return includedKeys.every(
     (key) =>
-      Object.keys(including).includes(key) &&
+      includingKeys.includes(key) &&
       deepInclude((including as JsonValueObject)[key], (included as JsonValueObject)[key])
   )
 }
