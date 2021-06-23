@@ -1,5 +1,6 @@
 import http, { IncomingMessage, ServerResponse } from 'http'
-import { compactIfJson } from './requestParser'
+import { structObjectIfJson } from './requestParser'
+import deepInclude from './deepInclude'
 
 function mockServer(endpoints: Endpoint[], port: number): void {
   const processor = createRequestProcessor(endpoints)
@@ -18,19 +19,17 @@ function createRequestProcessor(endpoints: Endpoint[]): (req: IncomingMessage, r
       })
       req.on('end', () => resolve(b))
     })
-    const body = bodyRaw ? compactIfJson(bodyRaw as string) : undefined
+    const body = structObjectIfJson(bodyRaw as string)
 
     const endpointsPathMatched = endpoints.filter((e) => e.request.path === req.url)
     if (endpointsPathMatched.length === 0) {
-      res.writeHead(404)
-      res.end('Not found', 'utf-8')
+      res.writeHead(404).end('Not found', 'utf-8')
       return
     }
 
     const endpointsMethodMatched = endpointsPathMatched.filter((e) => e.request.method === req.method)
     if (endpointsMethodMatched.length === 0) {
-      res.writeHead(405)
-      res.end('Method Not Allowed', 'utf-8')
+      res.writeHead(405).end('Method Not Allowed', 'utf-8')
       return
     }
 
@@ -38,15 +37,13 @@ function createRequestProcessor(endpoints: Endpoint[]): (req: IncomingMessage, r
       Object.keys(e.request.header).every((key) => e.request.header[key] === req.headers[key.toLowerCase()])
     )
     if (endpointsHeaderMathed.length === 0) {
-      res.writeHead(400)
-      res.end('Bad Request (header)', 'utf-8')
+      res.writeHead(400).end('Bad Request (header)', 'utf-8')
       return
     }
 
-    const endpointsBodyMatched = endpointsHeaderMathed.filter((e) => e.request.body === body)
+    const endpointsBodyMatched = endpointsHeaderMathed.filter((e) => deepInclude(body, e.request.body))
     if (endpointsBodyMatched.length === 0) {
-      res.writeHead(400)
-      res.end('Bad Request (body)', 'utf-8')
+      res.writeHead(400).end('Bad Request (body)', 'utf-8')
       return
     }
 
@@ -54,9 +51,8 @@ function createRequestProcessor(endpoints: Endpoint[]): (req: IncomingMessage, r
       console.error({ error: 'request matched multiple endpoints' })
     }
 
-    const [endpoint] = endpointsBodyMatched
-    res.writeHead(endpoint.response.status, endpoint.response.header)
-    res.end(endpoint.response.body, 'utf-8')
+    const [{ response }] = endpointsBodyMatched
+    res.writeHead(response.status, response.header).end(response.body, 'utf-8')
   }
 }
 

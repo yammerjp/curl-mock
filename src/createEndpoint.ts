@@ -40,6 +40,7 @@ export default function createEndpointFromBlocks(blocks: Block[]): Endpoint[] {
       request = undefined
       continue
     }
+
     console.error({ error: 'Unknown block type', value: b.type })
   }
   return endpoints

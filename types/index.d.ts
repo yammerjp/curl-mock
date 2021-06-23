@@ -1,10 +1,12 @@
 type HTTPRequestMethods = 'POST' | 'GET' | 'PUT' | 'DELETE' // ...
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type HTTPRequestBody = any|string
 
 type Request = {
     method: HTTPRequestMethods
     path: string
     header: { [key:string]: string }
-    body?: string
+    body?: HTTPRequestBody
 }
 
 type Response = {
@@ -19,8 +21,16 @@ type Endpoint = {
 }
 
 type Block = {
-    type: 'host' | 'request' | ResponseType
+    type: 'request' | ResponseType
     value: string
 }
 
 type ResponseType = 'response' | 'response-include'
+
+type JsonValue = string | number | null | boolean | JsonValueArray | JsonValueObject
+
+type JsonValueArray = Array<JsonValue>
+
+interface JsonValueObject {
+    [key: string]: JsonValue
+}
