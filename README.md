@@ -29,5 +29,6 @@ curl http://localhost:3000/hello3 --header 'User-Agent: Mozilla/5.0 (Windows NT 
 $ git clone https://github.com/yammerjp/curldoc.git
 $ cd curldoc
 $ npm i
-$ npm run build && npm start
+$ npm run build
+$ ./bin/curldoc.js example/helloworld.md
 ```
