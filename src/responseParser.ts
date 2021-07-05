@@ -1,4 +1,4 @@
-import { headerParser } from './requestParser'
+import httpHeaderLineParser from './httpHeaderLineParser'
 
 export default function responseParser(str: string, type: ResponseType): Response | undefined {
   if (type === 'response') {
@@ -39,7 +39,7 @@ function responseIncludeHeadersParser(str: string): Response {
     }
 
     // header
-    const { key, value } = headerParser(lines[i])
+    const { key, value } = httpHeaderLineParser(lines[i])
     if (key) {
       header[key] = value
     } else {

@@ -1,5 +1,5 @@
 import http, { IncomingMessage, ServerResponse } from 'http'
-import { structObjectIfJson } from './requestParser'
+import { structObjectIfJson } from './curlOptions'
 import deepInclude from './deepInclude'
 
 function mockServer(endpoints: Endpoint[], port: number): void {

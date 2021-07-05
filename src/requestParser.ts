@@ -1,3 +1,5 @@
+import { curlOptionHandlers } from './curlOptions'
+
 function requestParser(curlCmdStr: string): Request | undefined {
   let path: string | undefined
   const header: { [key: string]: string } = {}
@@ -5,79 +7,71 @@ function requestParser(curlCmdStr: string): Request | undefined {
   let body: HTTPRequestBody | undefined
 
   const tokens = tokenizer(curlCmdStr)
-  if (tokens.length === 0 || tokens[0] !== 'curl') {
-    console.error({ error: 'request is invalid format (need "curl" on head)' })
-    return undefined
+
+  const [ firstToken ] = tokens
+  if (firstToken !== 'curl') {
+    throw new Error('request is invalid format (need "curl" on head)')
   }
-  for (let i = 0; i < tokens.length; i += 1) {
+
+  for (let i = 1; i < tokens.length; i += 1) {
+    const [ token, nextToken ] = tokens.slice(i, i+2)
+
     // path
-    if (/^http(s)?:\/\//.test(tokens[i])) {
+    if (/^http(s)?:\/\//.test(token)) {
       if (path) {
         console.error({ error: 'specifying url is duplicated' })
         continue
       }
-      path = urlParser(tokens[i])
+      path = urlParser(token)
       continue
     }
 
-    // method
-    if (tokens[i] === '-X' || tokens[i] === '--request') {
-      i += 1
-      if (i === tokens.length) {
-        console.error({
-          error: 'Failed to parse request. last token is HTTP request method option but it is not specified anything'
-        })
-        break
+    const optionHandler = curlOptionHandlers[token]
+    if (!optionHandler) {
+      throw new Error('Unknow option')
+    }
+    const handled = optionHandler(nextToken)
+
+    // update local variables to reflect 'handled'
+    if (handled.request.path !== undefined) {
+      if (path) {
+        throw new Error('Failed to parserequest. HTTP request methods conflict.')
       }
+      path = handled.request.path
+    }
+    if (handled.request.header !== undefined) {
+      const [ key ] = Object.keys(handled.request.header)
+      if (header[key]) {
+        throw new Error('Failed to parse request. Headers conflict.')
+      }
+      header[key] = handled.request.header[key]
+    }
+    if (handled.request.method !== undefined) {
       if (method) {
-        console.error('Failed to parserequest. HTTP request methods conflict.')
-        continue
+        throw new Error('Failed to parse request. Methods conflict.')
       }
-      if (tokens[i] === 'GET' || tokens[i] === 'POST' || tokens[i] === 'PUT' || tokens[i] === 'DELETE') {
-        method = tokens[i] as HTTPRequestMethods
-      }
+      method = handled.request.method
     }
-
-    // header
-    if (tokens[i] === '--header' || tokens[i] === '-H') {
-      i += 1
-      if (i === tokens.length) {
-        console.error({
-          error: 'Failed to parse request. last token is HTTP header option but it is not specified anything'
-        })
-        break
-      }
-      const { key, value } = headerParser(tokens[i])
-      if (!key || header[key]) {
-        console.error('Failed to parserequest. Headers conflict.')
-        continue
-      }
-      header[key] = value
-    }
-
-    // body
-    if (tokens[i] === '--data-raw') {
-      i += 1
-      if (i === tokens.length) {
-        console.error({
-          error: 'Failed to parse request. last token is HTTP request body option but it is not specified anything'
-        })
-        break
-      }
+    if (handled.request.body !== undefined) {
       if (body) {
-        console.error('Failed to parserequest. HTTP request body conflict.')
-        continue
+        throw new Error('Failed to parse request. HTTP request body conflict.')
       }
-      body = structObjectIfJson(tokens[i])
+      body = handled.request.body
+    }
+
+    if (handled.consumedNextToken) {
+      i += 1
     }
   }
 
   if (!path) {
-    console.error({ error: 'url is not specified' })
-    path = '/'
+    throw new Error('Failed to parse request. Url is not specified' )
   }
   if (!method) {
     method = 'GET'
+  }
+  if (!body) {
+    body = ''
   }
   return { method, path, header, body }
 }
@@ -88,22 +82,6 @@ function urlParser(token: string): string {
     return '/'
   }
   return `/${urlParts.slice(3).join('/')}`
-}
-
-function headerParser(token: string): {
-  key: string | undefined
-  value: string
-} {
-  if (!/^[a-zA-Z0-9-]+:( )*/.test(token)) {
-    console.error({
-      error: 'Failed to parse request. HTTP header format is invalid.'
-    })
-    return { key: undefined, value: '' }
-  }
-  const devidedByColon = token.split(':')
-  const key = devidedByColon[0]
-  const value = devidedByColon.slice(1).join(':').trim()
-  return { key, value }
 }
 
 function tokenizer(argString: string): string[] {
@@ -166,15 +144,4 @@ function deleteTheCharactor(word: string, idx: number) {
   return head + tail
 }
 
-function structObjectIfJson(body: string | undefined): HTTPRequestBody | undefined {
-  try {
-    if (body === undefined) {
-      return undefined
-    }
-    return JSON.parse(body)
-  } catch {
-    return body
-  }
-}
-
-export { requestParser, tokenizer, headerParser, structObjectIfJson }
+export { requestParser, tokenizer }
