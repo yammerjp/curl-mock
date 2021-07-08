@@ -1,16 +1,8 @@
-import http, { IncomingMessage, ServerResponse } from 'http'
-import { structObjectIfJson } from './curlOptions'
-import deepInclude from './deepInclude'
+import { IncomingMessage, ServerResponse } from 'http'
+import structObjectIfJson from '../utils/structObjectIfJson'
+import deepInclude from '../utils/deepInclude'
 
-function mockServer(endpoints: Endpoint[], port: number): void {
-  const processor = createRequestProcessor(endpoints)
-  http.createServer(processor).listen(port)
-  console.log(
-    `A server of curl-mock is running at http://localhost:${port}/\nPlease execute such as following the curl command\ncurl http://localhost:${port}`
-  )
-}
-
-function createRequestProcessor(endpoints: Endpoint[]): (req: IncomingMessage, res: ServerResponse) => Promise<void> {
+function createRequestHandler(endpoints: Endpoint[]): (req: IncomingMessage, res: ServerResponse) => Promise<void> {
   return async (req: IncomingMessage, res: ServerResponse) => {
     const bodyRaw = await new Promise((resolve) => {
       let b = ''
@@ -56,4 +48,4 @@ function createRequestProcessor(endpoints: Endpoint[]): (req: IncomingMessage, r
   }
 }
 
-export { mockServer, createRequestProcessor }
+export default createRequestHandler
