@@ -1,8 +1,10 @@
-import httpHeaderLineParser from './httpHeaderLineParser'
+import parseHttpHeader from './parseHttpHeader'
+import structObjectIfJson from '../utils/structObjectIfJson'
+
 // ---------- type definitions ----------
 interface CurldocRequest {
   path?: string
-  header?: { [key:string]: string }
+  header?: { [key: string]: string }
   method?: HTTPRequestMethods
   body?: HTTPRequestBody
 }
@@ -13,7 +15,7 @@ type CurlOptionHandler = (nextToken?: string) => {
 }
 
 type CurlOptionHandlers = {
-  [optionname:string]: CurlOptionHandler
+  [optionname: string]: CurlOptionHandler
 }
 
 // ---------- handlers ----------
@@ -48,43 +50,27 @@ const handleHttpHeader: CurlOptionHandler = (nextToken) => {
   if (nextToken === undefined) {
     throw new Error('Need next token to specify a HTTP header.')
   }
-  const { key, value } = httpHeaderLineParser(nextToken)
+  const { key, value } = parseHttpHeader(nextToken)
   if (!key) {
     throw new Error('Failed to parse HTTP request headr.')
   }
   return {
     request: {
       header: {
-        [key]: value,
-      },
+        [key]: value
+      }
     },
-    consumedNextToken: true,
-  };
-}
-
-
-// ---------- handlers object ----------
-const curlOptionHandlers: CurlOptionHandlers = {
-  '-X':         handleHttpRequestMethod,
-  '--request':  handleHttpRequestMethod,
-  '--data-raw': handleHttpBodyRaw,
-  '--header':   handleHttpHeader,
-  '-H':         handleHttpHeader,
-}
-
-
-// ---------- utility functions ----------
-function structObjectIfJson(body: string | undefined): HTTPRequestBody | undefined {
-    console.log(`before struct: ${body}`)
-  try {
-    if (body === undefined) {
-      return undefined
-    }
-    return JSON.parse(body)
-  } catch {
-    return body
+    consumedNextToken: true
   }
 }
 
+// ---------- handlers object ----------
+const curlOptionHandlers: CurlOptionHandlers = {
+  '-X': handleHttpRequestMethod,
+  '--request': handleHttpRequestMethod,
+  '--data-raw': handleHttpBodyRaw,
+  '--header': handleHttpHeader,
+  '-H': handleHttpHeader
+}
 
-export { curlOptionHandlers, structObjectIfJson }
+export { curlOptionHandlers, handleHttpBodyRaw, handleHttpRequestMethod, handleHttpHeader }

@@ -20,11 +20,6 @@ type Endpoint = {
     response: Response
 }
 
-type Block = {
-    type: 'request' | ResponseType
-    value: string
-}
-
 type ResponseType = 'response' | 'response-include'
 
 type JsonValue = string | number | null | boolean | JsonValueArray | JsonValueObject

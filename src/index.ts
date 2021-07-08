@@ -1,20 +1,23 @@
-import { mockServer } from './mockServer'
-import readFile from './readFile'
-import createEndpointFromBlocks from './createEndpoint'
+import fs from 'fs/promises'
+
+import documentProcessor from "./documentProcessor"
+import serverBuilder from "./serverBuilder"
 
 async function createEndpoints(documentPaths: string[]): Promise<Endpoint[]> {
-  const blocks = (await Promise.all(documentPaths.map(readFile))).flat()
-  return createEndpointFromBlocks(blocks)
+  const markdowns = await Promise.all(documentPaths.map(path => fs.readFile(path, 'utf-8')))
+  const endpoints = documentProcessor(markdowns);
+  return endpoints
 }
 
 async function server(port: number, documentPaths: string[]): Promise<boolean> {
   const endpoints = await createEndpoints(documentPaths)
   try {
-    mockServer(endpoints, port)
+    serverBuilder(endpoints, port)
     return true
   } catch {
     return false
   }
+
 }
 
 export { server, createEndpoints }
