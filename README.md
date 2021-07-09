@@ -4,21 +4,45 @@ curldoc is a simple executable Web API document format using the curl command.
 
 The CLI Application of curldoc behave a HTTP mock server from a markdown file of Web API document.
 
+You can create a mock server with such as following the markdown document.
 
 <pre>
 
-A document is markdown file.
+The document is a markdown file.
 You can write anything outside of ``` ... ```
 
+And you can describe a mock server's endpoint behaviors with a pair of code-block 'curldoc-request' and 'curldoc-response'.
+
+First, please describe accepting reqeust with curl command format in 'curldoc-request'
+
 ```curldoc-request
-curl http://localhost:3000/hello3 --header 'User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0'
+curl http://localhost:3000/hello --header 'Accept: application/json'
 ```
+
+Next, please describe returning response body text in 'curldoc-request'
+(HTTP status code is '200 OK'.)
 
 ```curldoc-response
 {
     "message": "hello",
     "path": "/json_endpoint"
 }
+```
+
+In addition, you can specify any HTTP response headers or HTTP status code with using a code-block 'curldoc-response-include'
+
+```curldoc-request
+curl http://localhost:3000/response-internal-server-error
+```
+
+```curldoc-response-include
+HTTP/1.1 500 Internal Server Error
+Content-Type: text/plain
+Transfer-Encoding: chunked
+
+Internal Server Error....
+
+
 ```
 
 </pre>
