@@ -77,6 +77,7 @@ function codeBlocks2EndpointsWithString(codeBlocks: CodeBlock[]):EndpointWithStr
         response: b.value,
         responseType: b.type
       })
+      request = undefined
       continue
     }
     throw new Error('Unknown block type')
