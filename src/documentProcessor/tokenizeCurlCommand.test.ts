@@ -13,6 +13,8 @@ test('tokenizeCurlCommand', () => {
   expect(tokenizeCurlCommand('  "hello, world!"   ')).toStrictEqual(['hello, world!'])
   expect(tokenizeCurlCommand("  'hello, world!'   ")).toStrictEqual(['hello, world!'])
   expect(tokenizeCurlCommand('asd "fasdfa asdf"')).toStrictEqual(['asd', 'fasdfa asdf'])
+  expect(tokenizeCurlCommand(`asd "fasdfa a\\"s'df"`)).toStrictEqual(['asd', `fasdfa a"s'df`])
+  expect(tokenizeCurlCommand(`asd 'fasdfa a\\'s"df'`)).toStrictEqual(['asd', `fasdfa a's"df`])
   expect(
     tokenizeCurlCommand(
       "curl http://localhost:3000/hello2 --header 'User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0'"
