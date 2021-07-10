@@ -1,5 +1,5 @@
+import { split as tokenizeShellCommand } from 'shlex'
 import { curlOptionHandlers } from './curlOptionHandlers'
-import { tokenizeCurlCommand } from './tokenizeCurlCommand'
 
 function parseCurlCommand(curlCmdStr: string): Request {
   let path: string | undefined
@@ -7,7 +7,7 @@ function parseCurlCommand(curlCmdStr: string): Request {
   let method: HTTPRequestMethods | undefined
   let body: HTTPRequestBody | undefined
 
-  const tokens = tokenizeCurlCommand(curlCmdStr)
+  const tokens = tokenizeShellCommand(curlCmdStr)
 
   const [firstToken] = tokens
   if (firstToken !== 'curl') {
