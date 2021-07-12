@@ -1,6 +1,6 @@
 /* eslint-disable jest/require-top-level-describe */
 
-import documentProcessor from ".";
+import documentProcessor from "../../src/documentProcessor";
 
 test('documentProcessor', () => {
   expect.hasAssertions()

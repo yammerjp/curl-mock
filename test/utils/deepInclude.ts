@@ -1,5 +1,5 @@
 /* eslint-disable jest/require-top-level-describe */
-import deepInclude from './deepInclude'
+import deepInclude from '../../src/utils/deepInclude'
 
 test('deepInclude', () => {
   expect.hasAssertions()

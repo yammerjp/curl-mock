@@ -1,6 +1,6 @@
 /* eslint-disable jest/require-top-level-describe */
 
-import { disassembleMarkdown } from "./disassembleMarkdown";
+import { disassembleMarkdown } from "../../src/documentProcessor/disassembleMarkdown";
 
 test('disassembleMarkdown', () => {
   expect.hasAssertions()

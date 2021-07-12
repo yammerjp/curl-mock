@@ -1,5 +1,5 @@
 /* eslint-disable jest/require-top-level-describe */
-import { curlOptionHandlers } from './curlOptionHandlers'
+import { curlOptionHandlers } from '../../src/documentProcessor/curlOptionHandlers'
 
 test('curlOptionHandlers handle HTTP request method options', () => {
   expect.hasAssertions()

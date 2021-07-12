@@ -1,5 +1,5 @@
 /* eslint-disable jest/require-top-level-describe */
-import { parseCurlCommand } from './parseCurlCommand'
+import { parseCurlCommand } from '../../src/documentProcessor/parseCurlCommand'
 
 test('parseCurlCommand()', () => {
   expect.hasAssertions()
