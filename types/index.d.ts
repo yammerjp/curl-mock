@@ -9,6 +9,7 @@ type Request = {
     body?: HTTPRequestBody
 }
 
+type ResponseType = 'response' | 'response-include'
 type Response = {
   status: number
   header: { [key:string]: string }
@@ -18,14 +19,4 @@ type Response = {
 type Endpoint = {
     request: Request
     response: Response
-}
-
-type ResponseType = 'response' | 'response-include'
-
-type JsonValue = string | number | null | boolean | JsonValueArray | JsonValueObject
-
-type JsonValueArray = Array<JsonValue>
-
-interface JsonValueObject {
-    [key: string]: JsonValue
 }

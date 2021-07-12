@@ -1,3 +1,11 @@
+type JsonValue = string | number | null | boolean | JsonValueArray | JsonValueObject
+
+type JsonValueArray = Array<JsonValue>
+
+interface JsonValueObject {
+    [key: string]: JsonValue
+}
+
 export default function deepInclude(including: JsonValue, included: JsonValue): boolean {
   if (typeof including !== typeof included) {
     return false
