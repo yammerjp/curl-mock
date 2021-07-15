@@ -3,11 +3,19 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const curldoc = require('../dist/index.js');
 
+const usage = () => {
+  console.error('Usage: curldoc (--port <TCP port>) <markdown file paths ... >')
+  process.exit(1)
+}
+
 const parseProcessArgv = () => {
   let port = 3000
   const documentPaths = []
   const args = process.argv.slice(2)
   for (let i = 0; i < args.length; i += 1) {
+    if (args[i] === '-h' || args[i] === '--help') {
+      usage()
+    }
     if (args[i] === '-p' || args[i] === '--port') {
       if (i + 1 >= args.length) {
         console.error({ error: 'Failed to read command-line arguments' })
@@ -20,8 +28,7 @@ const parseProcessArgv = () => {
     documentPaths.push(args[i])
   }
   if (documentPaths.length === 0) {
-    console.error('Usage: curldoc (--port <TCP port>) <markdown file paths ... >')
-    process.exit(1)
+    usage()
   }
   return {port, documentPaths}
 }
