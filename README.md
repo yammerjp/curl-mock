@@ -54,5 +54,23 @@ $ git clone https://github.com/yammerjp/curldoc.git
 $ cd curldoc
 $ npm i
 $ npm run build
-$ ./bin/curldoc.js example/helloworld.md
+$ npm link
+
+# Usage:
+# $ curldoc (--port <TCP port>) <markdown file paths ... >
+$ curldoc example/helloworld.md
 ```
+## Support curl options
+
+You can use following the options in a markdown's codeblock 'curldoc-request'.
+
+- `--header`, `-H` ... specify http request headers
+- `--data-raw` ... specify a http request body
+- `--request`, `-X` ... specify a http request method
+
+If you want to use other options, please contribute to the repository.
+(curl options are processed in /src/documentProcessor/curlOptionHandlers.ts)
+
+## LICENSE
+
+MIT
