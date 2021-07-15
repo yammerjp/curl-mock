@@ -1,3 +1,5 @@
+import type { HTTPRequestBody } from '../endpoint'
+
 function structObjectIfJson(body: string | undefined): HTTPRequestBody | undefined {
   try {
     if (body === undefined) {

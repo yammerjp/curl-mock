@@ -1,4 +1,5 @@
 import remark from 'remark'
+import type { ResponseType } from '../endpoint'
 
 type CodeBlock = {
   type: 'request' | ResponseType
@@ -55,7 +56,7 @@ function extractCurldocCodeBlock(markdown: string): CodeBlock[] {
   return BlocksIncludeUndefined.filter((b) => b) as CodeBlock[]
 }
 
-function codeBlocks2EndpointsWithString(codeBlocks: CodeBlock[]):EndpointWithString[] {
+function codeBlocks2EndpointsWithString(codeBlocks: CodeBlock[]): EndpointWithString[] {
   let request: string | undefined
   const endpointsWithString: EndpointWithString[] = []
 

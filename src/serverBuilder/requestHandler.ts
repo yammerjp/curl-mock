@@ -1,6 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http'
 import structObjectIfJson from '../utils/structObjectIfJson'
 import deepInclude from '../utils/deepInclude'
+import type { Endpoint } from '../endpoint'
 
 function createRequestHandler(endpoints: Endpoint[]): (req: IncomingMessage, res: ServerResponse) => Promise<void> {
   return async (req: IncomingMessage, res: ServerResponse) => {

@@ -1,4 +1,5 @@
 import parseHttpHeader from './parseHttpHeader'
+import type { ResponseType, Response } from '../endpoint'
 
 function parseResponse(str: string, type: ResponseType): Response {
   if (type === 'response') {
@@ -24,7 +25,7 @@ function parseResponseIncludeHeaders(str: string): Response {
     if (i === 0 && /^HTTP\/1\.1 [0-9][0-9][0-9] /.test(lines[i])) {
       const [, statusStr] = lines[i].split(' ')
       if (Number(statusStr) < 100 || Number(statusStr) >= 600) {
-        throw new Error('Failed to parse http response status code. The first line of response is invalid' )
+        throw new Error('Failed to parse http response status code. The first line of response is invalid')
       }
       status = Number(statusStr)
       continue
@@ -41,7 +42,7 @@ function parseResponseIncludeHeaders(str: string): Response {
     if (!key) {
       throw new Error('Failed to parse http response header.')
     }
-      header[key] = value
+    header[key] = value
     continue
   }
 

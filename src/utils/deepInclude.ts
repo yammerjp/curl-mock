@@ -3,7 +3,7 @@ type JsonValue = string | number | null | boolean | JsonValueArray | JsonValueOb
 type JsonValueArray = Array<JsonValue>
 
 interface JsonValueObject {
-    [key: string]: JsonValue
+  [key: string]: JsonValue
 }
 
 export default function deepInclude(including: JsonValue, included: JsonValue): boolean {

@@ -1,5 +1,6 @@
 import parseHttpHeader from './parseHttpHeader'
 import structObjectIfJson from '../utils/structObjectIfJson'
+import type { HTTPRequestMethods, HTTPRequestBody } from '../endpoint'
 
 // ---------- type definitions ----------
 interface CurldocRequest {

@@ -1,5 +1,6 @@
 import { split as tokenizeShellCommand } from 'shlex'
 import { curlOptionHandlers } from './curlOptionHandlers'
+import type { Request, HTTPRequestMethods, HTTPRequestBody } from '../endpoint'
 
 function parseCurlCommand(curlCmdStr: string): Request {
   let path: string | undefined

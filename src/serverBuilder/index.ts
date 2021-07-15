@@ -1,5 +1,6 @@
 import http from 'http'
 import createRequestHandler from './requestHandler'
+import type { Endpoint } from '../endpoint'
 
 function serverBuilder(endpoints: Endpoint[], port: number): void {
   const processor = createRequestHandler(endpoints)

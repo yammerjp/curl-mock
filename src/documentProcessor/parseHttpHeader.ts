@@ -1,4 +1,4 @@
-export default function parseHttpHeader (line: string): {
+export default function parseHttpHeader(line: string): {
   key: string | undefined
   value: string
 } {
