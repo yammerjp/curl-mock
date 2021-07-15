@@ -10,7 +10,7 @@
     "start": "node bin/curldoc.js",
     "build": "tsc",
     "dev": "npm run build && npm run start",
-    "test": "jest src",
+    "test": "jest",
     "lint": "eslint --fix 'src/**/*.ts' && prettier --write 'src/**/*.ts'"
   },
   "repository": {
