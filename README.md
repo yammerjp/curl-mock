@@ -4,7 +4,7 @@ curldoc is a simple executable Web API document format using the curl command.
 
 The CLI Application of curldoc behave a HTTP mock server from a markdown file of Web API document.
 
-You can create a mock server with such as following the markdown document.
+You can create a mock server with such as the following markdown document.
 
 <pre>
 
@@ -47,19 +47,49 @@ Internal Server Error....
 
 </pre>
 
-## Setup
+## Usage
+
+### CLI
+
+
 
 ```sh
-$ git clone https://github.com/yammerjp/curldoc.git
-$ cd curldoc
-$ npm i
-$ npm run build
-$ npm link
+# Install CLI-app
+$ npm install --global curldoc
+
+# Download sample document
+$ curl -sL https://raw.githubusercontent.com/yammerjp/curldoc/main/example/helloworld.md > helloworld.md
+
+# Start mock server
+$ curldoc helloworld.md
 
 # Usage:
 # $ curldoc (--port <TCP port>) <markdown file paths ... >
-$ curldoc example/helloworld.md
 ```
+
+### Library
+
+1. Install the npm package 'curldoc' with `npm i curldoc` for your project
+2. Create API document ([example](./example/helloworld.md))
+3. Write TypeScript/JavaScript such as the following code
+
+```typescript
+import curldoc from 'curldoc'
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+async function main() {
+  const server = await curldoc.server(3000, [ 'path/to/markdown/file.md' ])
+
+  await wait(1000)
+
+  server.close()
+  console.log('closed')
+}
+
+main()
+```
+
 ## Support curl options
 
 You can use following the options in a markdown's codeblock 'curldoc-request'.

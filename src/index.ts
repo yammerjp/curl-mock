@@ -1,4 +1,5 @@
 import fs from 'fs/promises'
+import type { Server } from 'http'
 
 import documentProcessor from './documentProcessor'
 import serverBuilder from './serverBuilder'
@@ -10,14 +11,9 @@ async function createEndpoints(documentPaths: string[]): Promise<Endpoint[]> {
   return endpoints
 }
 
-async function server(port: number, documentPaths: string[]): Promise<boolean> {
+async function server(port: number, documentPaths: string[]): Promise<Server> {
   const endpoints = await createEndpoints(documentPaths)
-  try {
-    serverBuilder(endpoints, port)
-    return true
-  } catch {
-    return false
-  }
+  return  serverBuilder(endpoints, port)
 }
 
 export { server, createEndpoints }
