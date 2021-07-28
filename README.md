@@ -13,13 +13,13 @@ You can write anything outside of ``` ... ```
 
 And you can describe a mock server's endpoint behaviors with a pair of code-block 'curldoc-request' and 'curldoc-response'.
 
-First, please describe accepting reqeust with curl command format in 'curldoc-request'
+First, please describe a accepting reqeust with curl command format in 'curldoc-request'
 
 ```curldoc-request
 curl http://localhost:3000/hello --header 'Accept: application/json'
 ```
 
-Next, please describe returning response body text in 'curldoc-request'
+Next, please describe a returning response body text in 'curldoc-response'
 (HTTP status code is '200 OK'.)
 
 ```curldoc-response
@@ -29,7 +29,7 @@ Next, please describe returning response body text in 'curldoc-request'
 }
 ```
 
-In addition, you can specify any HTTP response headers or HTTP status code with using a code-block 'curldoc-response-include'
+In addition, you can specify any HTTP response headers or HTTP status code with using a code-block 'curldoc-response-include' instead of 'curldoc-response'
 
 ```curldoc-request
 curl http://localhost:3000/response-internal-server-error
